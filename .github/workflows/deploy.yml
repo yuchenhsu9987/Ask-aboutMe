@@ -27,10 +27,6 @@ jobs:
           node-version: '18'
           cache: 'npm'
       
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v4
-          
       - name: Install Dependencies
         run: npm ci
       
