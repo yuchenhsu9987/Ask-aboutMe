@@ -134,12 +134,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">{translations[language].title}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">{translations[language].title}</h1>
               <p className="text-sm text-gray-500 mt-1">{translations[language].disclaimer}</p>
             </div>
             <button
@@ -152,22 +152,22 @@ function App() {
           </div>
 
           <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-            <div>
+            <div className="w-full md:w-auto">
               <span className="font-semibold">{translations[language].designer}:</span> 許育宸
             </div>
-            <div>
+            <div className="w-full md:w-auto">
               <span className="font-semibold">Email:</span> rufushsu9987@gmail.com
             </div>
-            <div>
+            <div className="w-full md:w-auto">
               <span className="font-semibold">Phone:</span> 0975-115-201
             </div>
-            <div>
+            <div className="w-full md:w-auto">
               <span className="font-semibold">{translations[language].currentModel}:</span> GPT-3.5-turbo
             </div>
           </div>
           
           {!pdfFile && (
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 md:p-12 text-center">
               <label className="cursor-pointer">
                 <input
                   type="file"
@@ -176,7 +176,7 @@ function App() {
                   className="hidden"
                 />
                 <div className="flex flex-col items-center">
-                  <Upload className="w-12 h-12 text-gray-400 mb-4" />
+                  <Upload className="w-8 md:w-12 h-8 md:h-12 text-gray-400 mb-4" />
                   <span className="text-gray-600">{translations[language].upload}</span>
                 </div>
               </label>
@@ -185,9 +185,9 @@ function App() {
 
           {pdfFile && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div className="flex space-x-4">
+              <div className="w-full">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+                  <div className="flex space-x-4 items-center">
                     <button
                       onClick={() => setScale(scale => Math.max(0.5, scale - 0.1))}
                       className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
@@ -209,14 +209,14 @@ function App() {
                   </p>
                 </div>
 
-                <div className="border rounded-lg bg-gray-50 overflow-y-auto" style={{ height: 'calc(100vh - 300px)' }}>
+                <div className="border rounded-lg bg-gray-50 overflow-y-auto max-h-[calc(100vh-300px)] w-full">
                   <Document
                     file={pdfFile}
                     onLoadSuccess={onDocumentLoadSuccess}
                     className="flex flex-col items-center p-4"
                   >
                     {Array.from(new Array(numPages), (_, index) => (
-                      <div key={`page_${index + 1}`} className="mb-4">
+                      <div key={`page_${index + 1}`} className="mb-4 w-full flex justify-center">
                         <Page
                           pageNumber={index + 1}
                           scale={scale}
@@ -231,7 +231,7 @@ function App() {
               </div>
 
               <div className="flex flex-col h-full">
-                <div className="bg-gray-50 rounded-lg p-6 flex-grow">
+                <div className="bg-gray-50 rounded-lg p-4 md:p-6 flex-grow">
                   <h2 className="text-xl font-semibold mb-4">{translations[language].title}</h2>
                   <form onSubmit={handleQuestionSubmit} className="space-y-4">
                     <div>
