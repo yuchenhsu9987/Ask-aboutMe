@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import { ZoomIn, ZoomOut, Upload, Send, Loader2, Languages } from 'lucide-react';
-import OpenAI from 'openai';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 
 // Initialize PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
-});
 
 const prompts = {
   zh: "你是一個專業的面試助手，負責回答關於這份履歷的問題。請基於履歷內容提供準確、專業的回答。如果問題超出履歷範圍，請明確指出。回答時要保持專業、客觀的語氣。",
@@ -31,7 +24,8 @@ const translations = {
     disclaimer: "* 回答僅供參考，請以 PDF 內容為準",
     designer: "設計者",
     currentModel: "使用模型",
-    scrollHint: "* 可上下滾動查看完整內容"
+    scrollHint: "* 可上下滾動查看完整內容",
+    apiKeyError: "請先設定 OpenAI API Key"
   },
   en: {
     title: "Ask about me",
@@ -44,7 +38,8 @@ const translations = {
     disclaimer: "* Answers are for reference only, please refer to the PDF content",
     designer: "Designer",
     currentModel: "Current Model",
-    scrollHint: "* Scroll to view full content"
+    scrollHint: "* Scroll to view full content",
+    apiKeyError: "Please set your OpenAI API Key first"
   }
 };
 
@@ -97,23 +92,35 @@ function App() {
 
     setIsLoading(true);
     try {
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: prompts[language]
-          },
-          {
-            role: "user",
-            content: `這是一份履歷的內容：\n\n${pdfText}\n\n問題：${question}`
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: prompts[language]
+            },
+            {
+              role: "user",
+              content: `這是一份履歷的內容：\n\n${pdfText}\n\n問題：${question}`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
       });
 
-      setAnswer(response.choices[0].message.content || translations[language].error);
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+      setAnswer(data.choices[0].message.content || translations[language].error);
     } catch (error) {
       console.error('Error:', error);
       setAnswer(translations[language].error);
