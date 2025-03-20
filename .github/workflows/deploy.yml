@@ -9,9 +9,8 @@ on:
 permissions:
   contents: write
   pages: write
-  actions: read
-  id-token: write
-
+  deployments: write
+  statuses: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 concurrency:
