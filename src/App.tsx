@@ -90,22 +90,15 @@ function App() {
     e.preventDefault();
     if (!question.trim() || !pdfText) return;
 
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (!apiKey) {
-      setAnswer(translations[language].apiKeyError);
-      return;
-    }
-
     setIsLoading(true);
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      // 改为从后端获取响应
+      const response = await fetch('https://api.yuchenhsu.com/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
@@ -113,11 +106,9 @@ function App() {
             },
             {
               role: "user",
-              content: `這是一份履歷的內容：\n\n${pdfText}\n\n問題：${question}`
+              content: `这是一份履歷的內容：\n\n${pdfText}\n\n問題：${question}`
             }
-          ],
-          temperature: 0.7,
-          max_tokens: 500
+          ]
         })
       });
 

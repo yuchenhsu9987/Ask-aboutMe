@@ -17,6 +17,6 @@ export default defineConfig({
   },
   base: '/Ask-aboutMe/',
   define: {
-    'import.meta.env.VITE_OPENAI_API_KEY': JSON.stringify(process.env.VITE_OPENAI_API_KEY || '')
+    'import.meta.env.VITE_OPENAI_API_KEY': undefined
   }
 });
