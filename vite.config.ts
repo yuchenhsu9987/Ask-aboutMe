@@ -10,10 +10,13 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          pdfjs: ['pdfjs-dist'],
-        },
+          vendor: ['react', 'react-dom', 'react-pdf', 'lucide-react']
+        }
       },
     },
   },
   base: '/Ask-aboutMe/',
+  define: {
+    'import.meta.env.VITE_OPENAI_API_KEY': JSON.stringify(process.env.VITE_OPENAI_API_KEY || '')
+  }
 });
