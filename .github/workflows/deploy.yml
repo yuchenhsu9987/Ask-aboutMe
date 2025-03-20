@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # 足以支援 peaceiris/actions-gh-pages
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -24,17 +24,23 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       
+      - name: Verify package-lock.json
+        run: ls -la  # 檢查是否有 package-lock.json，避免 npm ci 失敗
+      
       - name: Build
         run: npm run build
         env:
           VITE_OPENAI_API_KEY: ${{ secrets.VITE_OPENAI_API_KEY }}
-          
+      
+      - name: Check Build Output
+        run: ls -la ./dist  # 確認 dist 目錄是否生成
+      
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          publish_branch: gh-pages  # 明確指定部署到 gh-pages 分支
+          publish_branch: gh-pages
           force_orphan: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
